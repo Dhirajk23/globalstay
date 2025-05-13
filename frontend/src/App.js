@@ -11,6 +11,7 @@ import BookingConfirmed from './pages/BookingConfirmed';
 import MyBookings from './pages/MyBookings';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ProtectedRoute from './ProtectedRoute'; // ✅ Import the wrapper
 
 function App() {
   return (
@@ -19,12 +20,25 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hotels" element={<Hotels />} />
-        <Route path="/booking" element={<Booking />} />
-         <Route path="/booking/confirmed" element={<BookingConfirmed />} />
-        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route
+          path="/booking"
+          element={
+            <ProtectedRoute>
+              <Booking />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/booking/confirmed" element={<BookingConfirmed />} />
+        <Route
+          path="/my-bookings"
+          element={
+            <ProtectedRoute>
+              <MyBookings />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
       </Routes>
     </Router>
   );

@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';  // ✅ For redirect
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const navigate = useNavigate();  // ✅ Hook to redirect
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Registered as ${formData.name}`);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/accounts/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);     // ✅ Show success message
+        navigate("/login");      // ✅ Redirect to login page
+      } else {
+        alert(data.error || "Registration failed");
+      }
+
+    } catch (error) {
+      console.error("Register error:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (

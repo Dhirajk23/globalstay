@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ Added for redirect
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const navigate = useNavigate(); // ✅ Initialize navigation
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Logged in as ${formData.email}`);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/accounts/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(data.message);  // ✅ Login successful
+localStorage.setItem("user", JSON.stringify({ email: formData.email }));
+window.location.href = "/"; // ✅ forces full reload to re-trigger navbar useEffect
+        // ✅ Redirect to home page
+      } else {
+        alert(data.error || "Login failed");
+      }
+
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
 
   return (
