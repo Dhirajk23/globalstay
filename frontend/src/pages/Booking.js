@@ -12,26 +12,41 @@ const Booking = () => {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [e.target.name]: e.target.value
-    });
+    }));
   };
-const handleSubmit = (e) => {
-  e.preventDefault();
 
-  const existing = JSON.parse(localStorage.getItem('bookings')) || [];
-  const updated = [...existing, formData];
-  localStorage.setItem('bookings', JSON.stringify(updated));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  navigate("/booking/confirmed", { state: formData });
-};
+    try {
+      const response = await fetch("http://localhost:8000/api/accounts/book/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include", // ✅ Required for session authentication
+        body: JSON.stringify(formData)
+      });
 
-  
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("✅ Booking saved to database!");
+        navigate("/booking/confirmed", { state: formData });
+      } else {
+        alert(data.error || "Booking failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("❌ An error occurred. Please try again.");
+    }
+  };
 
   return (
     <div className="container">
-
       <h1>Book a Room</h1>
       <form onSubmit={handleSubmit} style={{ maxWidth: '400px' }}>
         <label>Name:</label>

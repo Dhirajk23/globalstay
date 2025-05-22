@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ Added for redirect
+
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const navigate = useNavigate(); // ✅ Initialize navigation
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,10 +23,9 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);  // ✅ Login successful
-localStorage.setItem("user", JSON.stringify({ email: formData.email }));
-window.location.href = "/"; // ✅ forces full reload to re-trigger navbar useEffect
-        // ✅ Redirect to home page
+        alert(data.message);
+        localStorage.setItem("user", JSON.stringify({ email: formData.email }));
+        window.location.href = "/"; // refresh to show navbar updates
       } else {
         alert(data.error || "Login failed");
       }

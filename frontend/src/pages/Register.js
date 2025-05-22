@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // ✅ For redirect
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-  const navigate = useNavigate();  // ✅ Hook to redirect
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,8 +24,8 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);     // ✅ Show success message
-        navigate("/login");      // ✅ Redirect to login page
+        alert(data.message);
+        navigate("/login"); // redirect to login after registration
       } else {
         alert(data.error || "Registration failed");
       }
